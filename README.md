@@ -22,6 +22,7 @@ Developed for the Candidate Technical Assessment.
 11. **Comprehensive Feedback**: Inline validation errors (Zod + React Hook Form), loading spinners, empty-state placeholders, and global pop-up Toast notifications.
 
 ### Bonus Features Included:
+- 🧪 **Automated API Integration Test Suite**: Jest + Supertest test suite verifying health endpoints, auth validation, and task route security.
 - 🎛️ **Drag & Drop Kanban Board**: Interactive board allowing users to drag task cards between **To Do**, **In Progress**, and **Done** status columns with real-time API sync and Toast notifications!
 - ⚡ **Full TypeScript**: End-to-end type safety on both backend and frontend.
 - 🔄 **TanStack Query (React Query)**: Optimistic cache management, background refetching, and automatic query invalidation.
@@ -34,6 +35,7 @@ Developed for the Candidate Technical Assessment.
 
 - **Frontend**: React (Vite), TypeScript, Tailwind CSS, TanStack Query v5, Axios, React Hook Form, Zod, Lucide React.
 - **Backend**: Node.js, Express.js, TypeScript, MongoDB & Mongoose, JWT (`jsonwebtoken`), `bcryptjs`, `express-validator`.
+- **Testing**: Jest, Supertest, `ts-jest`.
 
 ---
 
@@ -43,6 +45,7 @@ Developed for the Candidate Technical Assessment.
 taskflow/
 ├── backend/
 │   ├── src/
+│   │   ├── __tests__/       # Jest + Supertest API automated test suites
 │   │   ├── config/          # MongoDB connection module
 │   │   ├── controllers/     # Auth & Task route handlers
 │   │   ├── middleware/      # Auth protection & error handling
@@ -54,6 +57,7 @@ taskflow/
 │   │   ├── app.ts           # Express application setup
 │   │   └── server.ts        # Server entry point
 │   ├── .env.example
+│   ├── jest.config.js
 │   ├── package.json
 │   └── tsconfig.json
 ├── frontend/
@@ -125,7 +129,19 @@ cd taskflow
 
 ---
 
-### Step 3: Frontend Setup
+### Step 3: Running Automated API Tests
+To run the automated integration test suite:
+```bash
+cd backend
+npm test
+```
+*Console output:*
+`Test Suites: 3 passed, 3 total`
+`Tests: 7 passed, 7 total`
+
+---
+
+### Step 4: Frontend Setup
 1. Open a new terminal and navigate to the `frontend` directory:
    ```bash
    cd frontend
@@ -184,6 +200,7 @@ Completed Features:
   - Full TypeScript Implementation (Backend & Frontend)
 
 Bonus Features:
+  - Automated API Test Suite (Jest + Supertest)
   - Drag & Drop Kanban Board (Interactive HTML5 Drag and Drop across status columns)
   - TypeScript (Full Stack)
   - TanStack Query v5 state management
