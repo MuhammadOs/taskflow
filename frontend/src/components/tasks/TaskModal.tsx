@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Calendar, Loader2, X } from 'lucide-react';
+import { Calendar, Clock, Loader2, X } from 'lucide-react';
 import { taskSchema, TaskInput } from '../../schemas/taskSchemas';
 import { taskApi } from '../../api/taskApi';
 import { Task } from '../../types';
@@ -19,10 +19,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
   const { showToast } = useToast();
   const isEditing = !!taskToEdit;
 
+  const [datePart, setDatePart] = useState<string>('');
+  const [timePart, setTimePart] = useState<string>('');
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<TaskInput>({
     resolver: zodResolver(taskSchema),
@@ -37,14 +41,27 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
 
   useEffect(() => {
     if (taskToEdit) {
+      let dStr = '';
+      let tStr = '';
+      if (taskToEdit.dueDate) {
+        const d = new Date(taskToEdit.dueDate);
+        dStr = d.toISOString().split('T')[0];
+        tStr = d.toTimeString().slice(0, 5);
+      }
+
+      setDatePart(dStr);
+      setTimePart(tStr);
+
       reset({
         title: taskToEdit.title,
         description: taskToEdit.description || '',
         status: taskToEdit.status,
         priority: taskToEdit.priority,
-        dueDate: taskToEdit.dueDate ? new Date(taskToEdit.dueDate).toISOString().split('T')[0] : '',
+        dueDate: taskToEdit.dueDate || '',
       });
     } else {
+      setDatePart('');
+      setTimePart('');
       reset({
         title: '',
         description: '',
@@ -54,6 +71,16 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
       });
     }
   }, [taskToEdit, reset, isOpen]);
+
+  // Keep hidden dueDate field updated when datePart or timePart changes
+  useEffect(() => {
+    if (datePart) {
+      const combined = timePart ? `${datePart}T${timePart}` : `${datePart}T23:59`;
+      setValue('dueDate', combined);
+    } else {
+      setValue('dueDate', '');
+    }
+  }, [datePart, timePart, setValue]);
 
   const taskMutation = useMutation({
     mutationFn: (data: TaskInput) => {
@@ -152,16 +179,34 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
             </div>
           </div>
 
-          {/* Due Date */}
+          {/* Due Date & Due Time Section */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-300">Due Date</label>
-            <div className="relative">
-              <Calendar className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
-              <input
-                {...register('dueDate')}
-                type="date"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
-              />
+            <label className="text-xs font-medium text-slate-300 flex items-center justify-between">
+              <span>Set Due Date & Time</span>
+              <span className="text-[11px] text-slate-500 font-normal">Optional</span>
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Date Input */}
+              <div className="relative">
+                <Calendar className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                <input
+                  type="date"
+                  value={datePart}
+                  onChange={(e) => setDatePart(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              {/* Time Input */}
+              <div className="relative">
+                <Clock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                <input
+                  type="time"
+                  value={timePart}
+                  onChange={(e) => setTimePart(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
             </div>
           </div>
 

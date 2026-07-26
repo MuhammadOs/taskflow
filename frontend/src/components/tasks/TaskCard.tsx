@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, Edit2, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Edit2, Trash2, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
 import { Task, TaskPriority, TaskStatus } from '../../types';
 
 interface TaskCardProps {
@@ -13,11 +13,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
   const getPriorityBadge = (priority: TaskPriority) => {
     switch (priority) {
       case 'high':
-        return <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-500/10 text-red-400 border border-red-500/20">High</span>;
+        return <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-500/10 text-red-400 border border-red-500/20">High Priority</span>;
       case 'medium':
-        return <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Medium</span>;
+        return <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Med Priority</span>;
       case 'low':
-        return <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">Low</span>;
+        return <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20">Low Priority</span>;
     }
   };
 
@@ -47,15 +47,33 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
     }
   };
 
-  const formatDate = (dateStr?: string) => {
+  const formatCreatedTime = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
+  const formatDueDate = (dateStr?: string) => {
     if (!dateStr) return null;
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    const d = new Date(dateStr);
+    const dateFormatted = d.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
+
+    const isOverdue = d.getTime() < Date.now() && task.status !== 'done' && task.status !== 'completed';
+
+    return {
+      text: dateFormatted,
+      isOverdue,
+    };
   };
 
+  const dueDateInfo = formatDueDate(task.dueDate);
   const isTaskCompleted = task.status === 'completed' || task.status === 'done';
 
   return (
@@ -80,15 +98,41 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
         )}
       </div>
 
-      {/* Footer */}
-      <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500">
-        <div className="flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5 text-slate-400" />
-          <span>{formatDate(task.dueDate) || formatDate(task.createdAt)}</span>
+      {/* Date & Time Section */}
+      <div className="space-y-2 pt-3 border-t border-slate-800/80 text-xs">
+        <div className="flex items-center justify-between gap-2">
+          {/* Due Date Badge */}
+          {dueDateInfo ? (
+            <div
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium border ${
+                dueDateInfo.isOverdue
+                  ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                  : 'bg-slate-800/80 text-slate-300 border-slate-700/60'
+              }`}
+            >
+              {dueDateInfo.isOverdue ? (
+                <AlertTriangle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+              ) : (
+                <Calendar className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              )}
+              <span>{dueDateInfo.isOverdue ? `Overdue: ${dueDateInfo.text}` : `Due: ${dueDateInfo.text}`}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium bg-slate-800/60 text-slate-400 border border-slate-800">
+              <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              <span>No Due Date</span>
+            </div>
+          )}
+
+          {/* Created Time Badge */}
+          <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium">
+            <Clock className="w-3 h-3 text-slate-500" />
+            <span>Created {formatCreatedTime(task.createdAt)}</span>
+          </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
+        {/* Action Controls */}
+        <div className="flex items-center justify-end gap-2 pt-1">
           {onStatusChange && !isTaskCompleted && (
             <button
               onClick={() => onStatusChange(task, 'done')}
