@@ -8,9 +8,9 @@ interface TaskStatsProps {
 
 export const TaskStats: React.FC<TaskStatsProps> = ({ tasks }) => {
   const total = tasks.length;
-  const pending = tasks.filter((t) => t.status === 'pending').length;
+  const toDo = tasks.filter((t) => t.status === 'todo' || t.status === 'pending').length;
   const inProgress = tasks.filter((t) => t.status === 'in-progress').length;
-  const completed = tasks.filter((t) => t.status === 'completed').length;
+  const done = tasks.filter((t) => t.status === 'done' || t.status === 'completed').length;
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -25,14 +25,14 @@ export const TaskStats: React.FC<TaskStatsProps> = ({ tasks }) => {
         </div>
       </div>
 
-      {/* Pending */}
+      {/* To Do */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center gap-4">
         <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
           <AlertCircle className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs font-medium text-slate-400">Pending</p>
-          <p className="text-xl font-bold text-white">{pending}</p>
+          <p className="text-xs font-medium text-slate-400">To Do</p>
+          <p className="text-xl font-bold text-white">{toDo}</p>
         </div>
       </div>
 
@@ -47,14 +47,14 @@ export const TaskStats: React.FC<TaskStatsProps> = ({ tasks }) => {
         </div>
       </div>
 
-      {/* Completed */}
+      {/* Done */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center gap-4">
         <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
           <CheckCircle2 className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs font-medium text-slate-400">Completed</p>
-          <p className="text-xl font-bold text-white">{completed}</p>
+          <p className="text-xs font-medium text-slate-400">Done</p>
+          <p className="text-xl font-bold text-white">{done}</p>
         </div>
       </div>
     </div>

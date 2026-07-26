@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Plus, Sparkles } from 'lucide-react';
+import { LayoutGrid, Loader2, Plus, Sparkles, Columns } from 'lucide-react';
 import { Navbar } from '../components/layout/Navbar';
 import { TaskStats } from '../components/tasks/TaskStats';
 import { TaskCard } from '../components/tasks/TaskCard';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
 import { TaskModal } from '../components/tasks/TaskModal';
 import { DeleteConfirmModal } from '../components/tasks/DeleteConfirmModal';
+import { KanbanBoard } from '../components/tasks/KanbanBoard';
 import { taskApi } from '../api/taskApi';
 import { Task, TaskFilters, TaskStatus } from '../types';
+import { useToast } from '../context/ToastContext';
+
+type ViewMode = 'grid' | 'kanban';
 
 export const DashboardPage: React.FC = () => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
+
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   // Filter & Search state
   const [filters, setFilters] = useState<TaskFilters>({
@@ -39,6 +46,10 @@ export const DashboardPage: React.FC = () => {
       taskApi.updateTask(id, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      showToast('Task status updated successfully!', 'success');
+    },
+    onError: () => {
+      showToast('Failed to update status', 'error');
     },
   });
 
@@ -81,12 +92,40 @@ export const DashboardPage: React.FC = () => {
             <p className="text-xs text-slate-400">Manage and track your tasks in real time</p>
           </div>
 
-          <button
-            onClick={handleOpenCreateModal}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> Create Task
-          </button>
+          <div className="flex items-center gap-3">
+            {/* View Mode Switcher */}
+            <div className="bg-slate-900 border border-slate-800 p-1 rounded-xl flex items-center gap-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === 'grid'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+                title="Grid View"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" /> Grid
+              </button>
+              <button
+                onClick={() => setViewMode('kanban')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  viewMode === 'kanban'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+                title="Kanban Board View (Drag & Drop)"
+              >
+                <Columns className="w-3.5 h-3.5" /> Kanban
+              </button>
+            </div>
+
+            <button
+              onClick={handleOpenCreateModal}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4" /> Create Task
+            </button>
+          </div>
         </div>
 
         {/* Statistics Bar */}
@@ -99,7 +138,7 @@ export const DashboardPage: React.FC = () => {
           onClearFilters={handleClearFilters}
         />
 
-        {/* Task Cards Grid */}
+        {/* Task Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-300">
@@ -149,19 +188,30 @@ export const DashboardPage: React.FC = () => {
             </div>
           )}
 
-          {/* Task Grid */}
+          {/* View Rendering */}
           {!isLoading && !isError && tasks.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {tasks.map((task) => (
-                <TaskCard
-                  key={task._id}
-                  task={task}
+            <>
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {tasks.map((task) => (
+                    <TaskCard
+                      key={task._id}
+                      task={task}
+                      onEdit={handleOpenEditModal}
+                      onDelete={handleOpenDeleteModal}
+                      onStatusChange={handleQuickStatusChange}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <KanbanBoard
+                  tasks={tasks}
                   onEdit={handleOpenEditModal}
                   onDelete={handleOpenDeleteModal}
                   onStatusChange={handleQuickStatusChange}
                 />
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </main>

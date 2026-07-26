@@ -24,9 +24,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
   const getStatusBadge = (status: TaskStatus) => {
     switch (status) {
       case 'completed':
+      case 'done':
         return (
           <span className="flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 className="w-3 h-3" /> Completed
+            <CheckCircle2 className="w-3 h-3" /> Done
           </span>
         );
       case 'in-progress':
@@ -35,10 +36,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
             <Clock className="w-3 h-3" /> In Progress
           </span>
         );
+      case 'todo':
       case 'pending':
+      default:
         return (
           <span className="flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-            <AlertCircle className="w-3 h-3" /> Pending
+            <AlertCircle className="w-3 h-3" /> To Do
           </span>
         );
     }
@@ -53,6 +56,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
     });
   };
 
+  const isTaskCompleted = task.status === 'completed' || task.status === 'done';
+
   return (
     <div className="bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-5 shadow-lg transition-all duration-200 flex flex-col justify-between space-y-4">
       <div className="space-y-3">
@@ -63,7 +68,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
         </div>
 
         {/* Title */}
-        <h3 className={`text-base font-semibold text-white tracking-tight ${task.status === 'completed' ? 'line-through text-slate-400' : ''}`}>
+        <h3 className={`text-base font-semibold text-white tracking-tight ${isTaskCompleted ? 'line-through text-slate-400' : ''}`}>
           {task.title}
         </h3>
 
@@ -84,11 +89,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          {onStatusChange && task.status !== 'completed' && (
+          {onStatusChange && !isTaskCompleted && (
             <button
-              onClick={() => onStatusChange(task, 'completed')}
-              className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30 transition-colors"
-              title="Mark as Completed"
+              onClick={() => onStatusChange(task, 'done')}
+              className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30 transition-colors cursor-pointer"
+              title="Mark as Done"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
             </button>
@@ -96,7 +101,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
           {onEdit && (
             <button
               onClick={() => onEdit(task)}
-              className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+              className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
               title="Edit Task"
             >
               <Edit2 className="w-3.5 h-3.5" />
@@ -105,7 +110,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onSt
           {onDelete && (
             <button
               onClick={() => onDelete(task)}
-              className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/30 transition-colors"
+              className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/30 transition-colors cursor-pointer"
               title="Delete Task"
             >
               <Trash2 className="w-3.5 h-3.5" />

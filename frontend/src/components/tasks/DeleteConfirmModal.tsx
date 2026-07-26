@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { taskApi } from '../../api/taskApi';
 import { Task } from '../../types';
+import { useToast } from '../../context/ToastContext';
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
@@ -16,12 +17,17 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   task,
 }) => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => taskApi.deleteTask(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      showToast('Task deleted successfully', 'info');
       onClose();
+    },
+    onError: (error: Error) => {
+      showToast(error.message || 'Failed to delete task', 'error');
     },
   });
 

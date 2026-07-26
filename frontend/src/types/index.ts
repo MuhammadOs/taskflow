@@ -5,7 +5,7 @@ export interface User {
   createdAt: string;
 }
 
-export type TaskStatus = 'pending' | 'in-progress' | 'completed';
+export type TaskStatus = 'todo' | 'pending' | 'in-progress' | 'completed' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high';
 
 export interface Task {

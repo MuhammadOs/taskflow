@@ -14,7 +14,7 @@ export const createTaskValidation: ValidationChain[] = [
     .withMessage('Description cannot exceed 1000 characters'),
   body('status')
     .optional()
-    .isIn(['pending', 'in-progress', 'completed'])
+    .isIn(['todo', 'pending', 'in-progress', 'completed', 'done'])
     .withMessage('Invalid status value'),
   body('priority')
     .optional()
@@ -41,7 +41,7 @@ export const updateTaskValidation: ValidationChain[] = [
     .withMessage('Description cannot exceed 1000 characters'),
   body('status')
     .optional()
-    .isIn(['pending', 'in-progress', 'completed'])
+    .isIn(['todo', 'pending', 'in-progress', 'completed', 'done'])
     .withMessage('Invalid status value'),
   body('priority')
     .optional()

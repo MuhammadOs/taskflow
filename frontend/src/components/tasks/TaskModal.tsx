@@ -6,6 +6,7 @@ import { Calendar, Loader2, X } from 'lucide-react';
 import { taskSchema, TaskInput } from '../../schemas/taskSchemas';
 import { taskApi } from '../../api/taskApi';
 import { Task } from '../../types';
+import { useToast } from '../../context/ToastContext';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface TaskModalProps {
 
 export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdit }) => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const isEditing = !!taskToEdit;
 
   const {
@@ -27,7 +29,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
     defaultValues: {
       title: '',
       description: '',
-      status: 'pending',
+      status: 'todo',
       priority: 'medium',
       dueDate: '',
     },
@@ -46,7 +48,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
       reset({
         title: '',
         description: '',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         dueDate: '',
       });
@@ -62,8 +64,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      showToast(isEditing ? 'Task updated successfully' : 'Task created successfully', 'success');
       onClose();
       reset();
+    },
+    onError: (error: Error) => {
+      showToast(error.message || 'Failed to save task', 'error');
     },
   });
 
@@ -126,9 +132,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
                 {...register('status')}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
               >
-                <option value="pending">Pending</option>
+                <option value="todo">To Do</option>
                 <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
+                <option value="done">Done</option>
               </select>
             </div>
 
@@ -164,14 +170,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors"
+              className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={taskMutation.isPending}
-              className="px-5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2 disabled:opacity-50"
+              className="px-5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {taskMutation.isPending ? (
                 <>

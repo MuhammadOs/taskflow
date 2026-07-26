@@ -9,7 +9,7 @@ export const taskSchema = z.object({
     .string()
     .max(1000, 'Description cannot exceed 1000 characters')
     .optional(),
-  status: z.enum(['pending', 'in-progress', 'completed']),
+  status: z.enum(['todo', 'pending', 'in-progress', 'completed', 'done']),
   priority: z.enum(['low', 'medium', 'high']),
   dueDate: z.string().optional(),
 });
