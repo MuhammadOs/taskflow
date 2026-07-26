@@ -6,7 +6,7 @@ Developed for the Candidate Technical Assessment.
 
 ---
 
-## Overview & Features
+## 🌟 Overview & Features
 
 ### Core Requirements Implemented (100% Complete):
 1. **User Registration & Login**: Authentication with encrypted password storage.
@@ -22,16 +22,16 @@ Developed for the Candidate Technical Assessment.
 11. **Comprehensive Feedback**: Inline validation errors (Zod + React Hook Form), loading spinners, empty-state placeholders, and global pop-up Toast notifications.
 
 ### Bonus Features Included:
-- **Automated API Integration Test Suite**: Jest + Supertest test suite verifying health endpoints, auth validation, and task route security.
-- **Drag & Drop Kanban Board**: Interactive board allowing users to drag task cards between **To Do**, **In Progress**, and **Done** status columns with real-time API sync and Toast notifications!
-- **Full TypeScript**: End-to-end type safety on both backend and frontend.
-- **TanStack Query (React Query)**: Optimistic cache management, background refetching, and automatic query invalidation.
-- **Toast Notification System**: Real-time feedback for all CRUD operations.
-- **Centralized Error Handling**: Express global error middleware and custom type declarations.
+- 🧪 **Automated API Integration Test Suite**: Jest + Supertest test suite verifying health endpoints, auth validation, and task route security.
+- 🎛️ **Drag & Drop Kanban Board**: Interactive board allowing users to drag task cards between **To Do**, **In Progress**, and **Done** status columns with real-time API sync and Toast notifications!
+- ⚡ **Full TypeScript**: End-to-end type safety on both backend and frontend.
+- 🔄 **TanStack Query (React Query)**: Optimistic cache management, background refetching, and automatic query invalidation.
+- 🔔 **Toast Notification System**: Real-time feedback for all CRUD operations.
+- 🛡️ **Centralized Error Handling**: Express global error middleware and custom type declarations.
 
 ---
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 - **Frontend**: React (Vite), TypeScript, Tailwind CSS, TanStack Query v5, Axios, React Hook Form, Zod, Lucide React.
 - **Backend**: Node.js, Express.js, TypeScript, MongoDB & Mongoose, JWT (`jsonwebtoken`), `bcryptjs`, `express-validator`.
@@ -39,7 +39,7 @@ Developed for the Candidate Technical Assessment.
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 taskflow/
@@ -82,7 +82,7 @@ taskflow/
 
 ---
 
-## Getting Started & Setup Instructions
+## 🚀 Getting Started & Setup Instructions
 
 ### Prerequisites
 - Node.js (`v18.x` or higher)
@@ -116,7 +116,7 @@ cd taskflow
    ```env
    PORT=5000
    MONGODB_URI=mongodb://127.0.0.1:27017/taskflow
-   JWT_SECRET=supersecretjwtkey_taskflow_2026
+   JWT_SECRET=your_jwt_secret_key_here
    NODE_ENV=development
    ```
 5. Start the backend development server:
@@ -155,7 +155,7 @@ npm test
    npm run dev
    ```
 4. Open your browser and navigate to:  
-   **`http://localhost:3000`**
+   👉 **`http://localhost:3000`**
 
 ---
 
@@ -175,13 +175,13 @@ npm test
 
 ---
 
-## Known Issues & Incomplete Items
+## 📋 Known Issues & Incomplete Items
 
 - **Known Issues**: None. All core requirements, edge-case error handling, and production builds pass cleanly without warnings.
 
 ---
 
-## Candidate Submission Format
+## 📩 Candidate Submission Format
 
 ```text
 Candidate Name: Muhammad
