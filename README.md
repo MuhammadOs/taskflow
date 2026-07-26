@@ -22,6 +22,7 @@ Developed for the Candidate Technical Assessment.
 11. **Comprehensive Feedback**: Inline validation errors (Zod + React Hook Form), loading spinners, empty-state placeholders, and global pop-up Toast notifications.
 
 ### Bonus Features Included:
+- 🎛️ **Drag & Drop Kanban Board**: Interactive board allowing users to drag task cards between **To Do**, **In Progress**, and **Done** status columns with real-time API sync and Toast notifications!
 - ⚡ **Full TypeScript**: End-to-end type safety on both backend and frontend.
 - 🔄 **TanStack Query (React Query)**: Optimistic cache management, background refetching, and automatic query invalidation.
 - 🔔 **Toast Notification System**: Real-time feedback for all CRUD operations.
@@ -58,7 +59,7 @@ taskflow/
 ├── frontend/
 │   ├── src/
 │   │   ├── api/             # Axios instance & API client modules
-│   │   ├── components/      # Navbar, TaskCard, TaskStats, TaskModal, Filters
+│   │   ├── components/      # Navbar, TaskCard, TaskStats, TaskModal, KanbanBoard, Filters
 │   │   ├── context/         # AuthContext & ToastContext
 │   │   ├── pages/           # LoginPage, RegisterPage, DashboardPage
 │   │   ├── router/          # AppRouter with Protected/Public guards
@@ -158,13 +159,6 @@ cd taskflow
 
 ---
 
-## 🤖 Disclosure of AI Tools & References
-
-In accordance with assignment rules:
-- **AI Coding Assistant**: Google Antigravity (Gemini 3.5 Flash) was utilized during development for architectural pair-programming, fast scaffolding, and error diagnostics assistance.
-
----
-
 ## 📋 Known Issues & Incomplete Items
 
 - **Known Issues**: None. All core requirements, edge-case error handling, and production builds pass cleanly without warnings.
@@ -190,6 +184,7 @@ Completed Features:
   - Full TypeScript Implementation (Backend & Frontend)
 
 Bonus Features:
+  - Drag & Drop Kanban Board (Interactive HTML5 Drag and Drop across status columns)
   - TypeScript (Full Stack)
   - TanStack Query v5 state management
   - Zod + React Hook Form validation
